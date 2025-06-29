@@ -599,3 +599,116 @@ footer i {
     border-left: none;
     border-right-color: var(--accent-color);
 }
+/* Mobile-first responsive design */
+@media (max-width: 768px) {
+    #map-container {
+        flex-direction: column;
+        height: calc(100vh - 120px); /* Adjust for header height */
+    }
+
+    #sidebar {
+        width: 100%;
+        max-height: 40vh;
+        overflow-y: auto;
+        border-right: none;
+        border-bottom: 1px solid #e0e0e0;
+        transform: translateY(0);
+        transition: transform 0.3s ease;
+    }
+
+    #sidebar.collapsed {
+        transform: translateY(calc(100% - 50px));
+    }
+
+    #sidebar-toggle {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        height: 50px;
+        background: var(--primary-color);
+        color: white;
+        border-radius: 0;
+        z-index: 1000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #sidebar-toggle i {
+        color: white;
+        transition: transform 0.3s ease;
+    }
+
+    #sidebar.collapsed + #sidebar-toggle i {
+        transform: rotate(180deg);
+    }
+
+    #map {
+        height: 60vh;
+        width: 100%;
+    }
+
+    .legend-items {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    header {
+        padding: 0.8rem 0;
+    }
+
+    header h1 {
+        font-size: 1.5rem;
+    }
+
+    .subtitle {
+        font-size: 0.9rem;
+    }
+}
+
+/* Additional mobile-specific styles */
+@media (max-width: 480px) {
+    .legend-items {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .location-item {
+        padding: 0.8rem;
+    }
+
+    .sidebar-header h2 {
+        font-size: 1.2rem;
+    }
+
+    .filter-container select {
+        padding: 0.6rem;
+    }
+}
+
+/* Prevent zooming on mobile */
+html {
+    touch-action: manipulation;
+}
+
+/* Better mobile controls */
+.leaflet-control-zoom {
+    margin-bottom: 60px !important; /* Avoid overlap with sidebar toggle */
+}
+
+.leaflet-control-locate {
+    margin-bottom: 60px !important;
+}
+
+/* Optimize popups for mobile */
+.leaflet-popup-content-wrapper {
+    max-width: 280px !important;
+}
+
+.leaflet-popup-content {
+    width: auto !important;
+}
+
+.popup-image {
+    height: 120px;
+}
