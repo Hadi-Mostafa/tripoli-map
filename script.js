@@ -663,6 +663,42 @@ document.addEventListener('DOMContentLoaded', function() {
             }, wait);
         };
     }
+// Modify the sidebar toggle behavior for mobile
+function setupMobileSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.getElementById('sidebar-toggle');
+    
+    if (window.innerWidth <= 768) {
+        // Start with sidebar collapsed on mobile
+        sidebar.classList.add('collapsed');
+        
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+            const icon = toggleBtn.querySelector('i');
+            icon.classList.toggle('fa-chevron-up');
+            icon.classList.toggle('fa-chevron-down');
+        });
+    } else {
+        // Desktop behavior
+        toggleBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+            const icon = toggleBtn.querySelector('i');
+            icon.classList.toggle('fa-chevron-right');
+            icon.classList.toggle('fa-chevron-left');
+        });
+    }
+}
 
+// Call this function in your initialization
+document.addEventListener('DOMContentLoaded', function() {
+    setupMobileSidebar();
+    
+    // Add this to handle window resize
+    window.addEventListener('resize', function() {
+        setupMobileSidebar();
+    });
+    
+    // Rest of your initialization code...
+});
 
 });
