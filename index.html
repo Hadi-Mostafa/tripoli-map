@@ -1,103 +1,121 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Responsive Map - Tripoli</title>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    :root {
-      --primary: #2c3e50;
-      --accent: #3498db;
-      --sidebar-width: 300px;
-      --transition: all 0.3s ease;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html, body {
-      height: 100%;
-      font-family: 'Tajawal', sans-serif;
-    }
-
-    #map {
-      height: 100vh;
-      width: 100vw;
-    }
-
-    #sidebar {
-      position: fixed;
-      top: 0;
-      left: -100%;
-      width: var(--sidebar-width);
-      height: 100%;
-      background: #fff;
-      box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-      overflow-y: auto;
-      z-index: 999;
-      transition: var(--transition);
-    }
-
-    #sidebar.active {
-      left: 0;
-    }
-
-    #sidebar-toggle {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      background: var(--primary);
-      color: white;
-      border: none;
-      border-radius: 4px;
-      width: 40px;
-      height: 40px;
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-      transition: var(--transition);
-    }
-
-    @media (max-width: 768px) {
-      #sidebar {
-        width: 100%;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>My Neighborhood in Tripoli, Lebanon</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="loading-screen" id="loading-screen">
+        <div class="loader">
+            <div class="loader-inner">
+                <div class="loader-line-wrap">
+                    <div class="loader-line"></div>
+                </div>
+                <div class="loader-line-wrap">
+                    <div class="loader-line"></div>
+                </div>
+                <div class="loader-line-wrap">
+                    <div class="loader-line"></div>
+                </div>
+                <div class="loader-line-wrap">
+                    <div class="loader-line"></div>
+                </div>
+                <div class="loader-line-wrap">
+                    <div class="loader-line"></div>
+                </div>
+            </div>
+            <div class="loading-text">Loading Tripoli Neighborhood...</div>
+        </div>
+    </div>
 
-  <div id="sidebar">
-    <h2 style="padding: 1rem;">Sidebar Content</h2>
-    <p style="padding: 0 1rem 1rem;">Here you can add place listings, filters, or any content.</p>
-  </div>
+    <header>
+        <div class="header-content">
+            <h1>Welcome to My Neighborhood in Tripoli</h1>
+            <p class="subtitle">Explore the places around my home in Lebanon's second largest city</p>
+            <div class="language-switcher">
+                <button id="lang-en" class="active">English</button>
+                <button id="lang-ar">العربية</button>
+            </div>
+        </div>
+    </header>
+    
+    <div id="map-container">
+        <div id="map"></div>
+        <div id="sidebar">
+            <div id="sidebar-toggle"><i class="fas fa-chevron-down"></i></div>
 
-  <button id="sidebar-toggle"><i class="fas fa-bars"></i></button>
+            <div class="sidebar-header">
+                <h2>Places of Interest</h2>
+                <div class="search-container">
+                    <input type="text" id="search-input" placeholder="Search places...">
+                    <i class="fas fa-search"></i>
+                </div>
+            </div>
 
-  <div id="map"></div>
+            <div class="filter-container">
+                <select id="category-filter">
+                    <option value="all">All Categories</option>
+                    <option value="home">Home</option>
+                    <option value="telecom">Telecom</option>
+                    <option value="retail">Retail</option>
+                    <option value="abandoned">Abandoned</option>
+                    <option value="sport">Sports</option>
+                    <option value="coffeeshop">Coffee Shops</option>
+                    <option value="health">Health</option>
+                </select>
+            </div>
 
-  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-  <script>
-    const map = L.map('map').setView([34.4367, 35.8497], 15);
+            <div id="location-list"></div>
+            
+            <div class="legend-container">
+                <h3>Map Legend</h3>
+                <div class="legend-items">
+                    <div class="legend-item">
+                        <div class="legend-color marker-home"></div>
+                        <span>Home</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color marker-telecom"></div>
+                        <span>Telecom</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color marker-retail"></div>
+                        <span>Retail</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color marker-sport"></div>
+                        <span>Sports</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color marker-coffeeshop"></div>
+                        <span>Coffee Shops</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color marker-health"></div>
+                        <span>Health</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color marker-company"></div>
+                        <span>Company</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>Created with <i class="fas fa-heart"></i> by a Computer Engineering Student</p>
+        <p class="last-updated">Last updated: <span id="current-date"></span></p>
+    </footer>
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
-
-    const sidebar = document.getElementById('sidebar');
-    const toggleBtn = document.getElementById('sidebar-toggle');
-
-    toggleBtn.addEventListener('click', () => {
-      sidebar.classList.toggle('active');
-    });
-  </script>
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.locatecontrol/dist/L.Control.Locate.min.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
